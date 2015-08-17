@@ -124,9 +124,10 @@ void renderImg()
     int pc = img.pixels[i];
 //    PVector c = new PVector(hue(pc),saturation(pc),brightness(pc));
     PVector c = new PVector(red(pc),green(pc),blue(pc));
+    float a = alpha(pc);
     PVector out = new PVector();
     colorTransform.mult(c,out);
-    recieverGraphics.pixels[i] = color(out.x,out.y,out.z);
+    recieverGraphics.pixels[i] = color(out.x,out.y,out.z,a);
 }
   recieverGraphics.updatePixels();
   recieverGraphics.endDraw();
@@ -181,6 +182,6 @@ void keyPressed() {
   
   if (key == 's' ) {
     String className = this.getClass().getSimpleName();
-    recieverGraphics.save(className+"-"+year()+"-"+month()+"-"+day()+":"+hour()+":"+minute()+":"+second()+":"+millis() +".png");    
+    recieverGraphics.save("renders/" + className+"-"+year()+"-"+month()+"-"+day()+":"+hour()+":"+minute()+":"+second()+":"+millis() +".png");    
   }
 }
