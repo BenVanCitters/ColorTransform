@@ -30,11 +30,13 @@ void setup()
   initControls();
 }
 
+//create p5 controls for the transform
 void initControls()
 {
   cp5 = new ControlP5(this);
   float top = 20;
   float left = 15;
+  //translations
   cp5.addSlider("sliderXTranslate")
                .setPosition(left,top)
                .setRange(-280,280)
@@ -51,6 +53,7 @@ void initControls()
                .setWidth(400);
                top+=15;
 
+  //Scaling
   cp5.addSlider("sliderXScale")
                .setPosition(left,top)
                .setRange(-1.5,1.5)
@@ -67,6 +70,7 @@ void initControls()
                .setWidth(400);
                top+=15;
 
+  //rotations
   cp5.addSlider("sliderXRotate")
                .setPosition(left,top)
                .setRange(0,TWO_PI)
@@ -88,13 +92,12 @@ void draw()
   background(180);
   updateMatrix();
   renderImg();
-  
-
   image(recieverGraphics,0,150,width,height-150);
 
  drawTransforms();
 }
 
+//apply the transforms from the sliders to our matrix
 void updateMatrix()
 {
   //initialize as identity
@@ -107,10 +110,9 @@ void updateMatrix()
   colorTransform.rotateY(sliderYRotate);
   colorTransform.rotateZ(sliderZRotate);
   colorTransform.scale(sliderXScale,sliderYScale,sliderZScale);
-  
-
 }
 
+//use the transfrom matrix to alter the colors in the image
 void renderImg()
 {
 //  colorMode(HSB, 255);
@@ -130,7 +132,7 @@ void renderImg()
   recieverGraphics.endDraw();
 }
 
-
+//draw the boxes to help visualize the 3-space transformation
 void drawTransforms()
 {
   float boxSz = 255;
@@ -159,6 +161,7 @@ void drawTransforms()
   popStyle(); 
 }
 
+//draw a simple set x-y-z 'unit' lines 
 void drawBasis()
 {
   pushStyle();
@@ -172,4 +175,12 @@ void drawBasis()
     stroke(0,0,255);
     line(0,0,0,0,0,20);
   popStyle(); 
+}
+
+void keyPressed() {
+  
+  if (key == 's' ) {
+    String className = this.getClass().getSimpleName();
+    recieverGraphics.save(className+"-"+year()+"-"+month()+"-"+day()+":"+hour()+":"+minute()+":"+second()+":"+millis() +".png");    
+  }
 }
