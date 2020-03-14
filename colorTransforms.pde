@@ -22,18 +22,37 @@ PGraphics recieverGraphics;
 void setup()
 {
   img = loadImage("grimes-vogue2012-Laurie-Bartley.jpg");
-  
-  size((displayHeight-150)*img.width/img.height,displayHeight-150,P3D);
- 
+  size(1000,1000,P3D);//(displayHeight-150)*img.width/img.height,displayHeight-150,P3D);
   recieverGraphics = createGraphics(img.width,img.height,P3D);
- 
   initControls();
 }
 
 //create p5 controls for the transform
 void initControls()
 {
+  
+  sliderXTranslate = 0;
+  sliderYTranslate = 0;
+  sliderZTranslate = 0;
+  
+  sliderXScale = 1.f;
+  sliderYScale = 1.f;
+  sliderZScale = 1.f;
+  
+  sliderXRotate = 0.f;
+  sliderYRotate = 0.f;
+  sliderZRotate = 0.f;
   cp5 = new ControlP5(this);
+  
+  cp5.remove("sliderXTranslate");
+  cp5.remove("sliderYTranslate");
+  cp5.remove("sliderZTranslate");
+  cp5.remove("sliderXScale");
+  cp5.remove("sliderYScale");
+  cp5.remove("sliderZScale");
+  cp5.remove("sliderXRotate");
+  cp5.remove("sliderYRotate");
+  cp5.remove("sliderZRotate");
   float top = 20;
   float left = 15;
   //translations
@@ -85,16 +104,37 @@ void initControls()
                .setPosition(left,top)
                .setRange(0,TWO_PI)
                .setWidth(400);
+  colorTransform = new PMatrix3D(1,0,0,0,
+                                 0,1,0,0,
+                                 0,0,1,0,
+                                 0,0,0,1);
 }
 
+void handleASyncFileInput()
+{
+    if(newLoad != null)
+  {
+    img = loadImage(newLoad);
+    recieverGraphics = createGraphics(img.width,img.height,P3D);
+    initControls();
+    newLoad= null;
+  }
+}
 void draw()
 {
+  
+  handleASyncFileInput();
+  
   background(180);
   updateMatrix();
   renderImg();
   image(recieverGraphics,0,150,width,height-150);
 
  drawTransforms();
+ textSize(25);
+ text("click and drag bars above to alter coloration",10,145);
+ textSize(32);
+  text("press 's' to save, 'o' to open a new file, 'r' to reset colors",10,height-40);
 }
 
 //apply the transforms from the sliders to our matrix
@@ -182,6 +222,26 @@ void keyPressed() {
   
   if (key == 's' ) {
     String className = this.getClass().getSimpleName();
-    recieverGraphics.save("renders/" + className+"-"+year()+"-"+month()+"-"+day()+":"+hour()+":"+minute()+":"+second()+":"+millis() +".png");    
+String savePath = "renders/" + className+"-"+year()+"-"+month()+"-"+day()+"."+hour()+"."+minute()+"."+second()+"."+millis() +".png";
+  println("Saving to: " + savePath);
+    recieverGraphics.save(savePath);    
+  }
+  if (key=='o')
+  {
+    selectInput("Select an image file to process:", "fileSelected");
+  }
+    if (key=='r')
+  {
+    initControls();
+  }
+}
+
+String newLoad ="grimes-vogue2012-Laurie-Bartley.jpg" ;
+void fileSelected(File selection) {
+  if (selection == null) {
+    println("Window was closed or the user hit cancel.");
+  } else {
+      println("User selected " + selection.getAbsolutePath());
+      newLoad = selection.getAbsolutePath();
   }
 }
